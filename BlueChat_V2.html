@@ -61,7 +61,14 @@ function received(data1) {
 				noti.SetMessage("A new Message!","From: " + data.name,data.msg);
 				noti.Notify();
 		}
+		app.TextToSpeech( data.msg )
+		
 		document.getElementsByClassName("messages")[0].innerHTML += "<br><div class='not_mine'><sup>" + data.name + "|" + getdate() + "</sup><br><b>" + data.msg + "</b></div>";
+		var element = document.getElementsByClassName("messages")[0];
+
+// Scroll the element into view
+//element.scrollIntoView(false); //
+element.scrollTop = element.scrollHeight;
 }
 function disconnection() {
 }
@@ -79,6 +86,7 @@ function send_msg() {
 		if (msg.length >= 1) {
 				if (bt.IsConnected(add)) {
 						bt.Write(get_data() + "\n");
+						//app.TextToSpeech( msg )
 						document.getElementsByClassName("messages")[0].innerHTML += "<br><div class='mine'><sup>" + getdate() + "</sup><br><b>" + msg + "</b></div>";
 				} else {
 						if (add.indexOf(":") == 2) {
@@ -145,32 +153,31 @@ function getdate() {
 		var time = new Date().getHours() + ":" + new Date().getMinutes();
 		return time + "&nbsp;&nbsp;&nbsp;" + year + "-" + month + "-" + day;
 }
+
 </script>
 <style>
 body {
-		background-color: rgb(0,150,255);
+		background: linear-gradient(to bottom,  rgba(121,249,174,1) 0%,rgba(14,210,92,1) 100%);
 }
 .help,.settings {
 		display: none;
 }
 .msg,.bt_address {
-		border-radius: 20px;
-		border-color: blue;
+		border-radius: 10px;
 		padding: 5px;
 		font-size: 20px;
 		text-align: center;
 }
 input[type="button"] {
-		border-radius: 20px;
-		border-color: blue;
+		border-radius: 10px;
 		padding: 3px;
 		font-size: 20px;
-		background-color: rgb(0,150,255);
+		background: linear-gradient(to bottom,  rgba(121,249,174,1) 0%,rgba(14,210,92,1) 100%);
 		color: white;
 }
 .messages {
-		width: 100%;
-		height: 500px;
+		width: 90%;
+		height: 400px;
 		overflow-y: scroll;
 }
 div.not_mine {
@@ -217,18 +224,9 @@ div.help > h1, div.help > p,div.help > b,.name {
 <br>
 <br>
 <br>
-<br>
-<br>
-<br>
 <input type="text" placeholder="Address" class="bt_address">
 <br>
 <input type="button" value="Scan for devices" class="bt_con">
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 <br>
 <br>
 <input type="button" value="Help" class="help_btn">
@@ -236,8 +234,6 @@ div.help > h1, div.help > p,div.help > b,.name {
 </div>
 <div class="settings">
 <input type="button" value="Delete all data" class="del_btn">
-<br>
-<br>
 <input type="button" value="Back" class="back_btn1">
 </div>
 <div class="help">
@@ -245,13 +241,8 @@ div.help > h1, div.help > p,div.help > b,.name {
 <hr>
 <p>How do i send messages?</p>
 <b>You can send messages when you have selected your friends device in the connect dialog</b>
-<br>
 <p>I have found a bug</p>
 <b>Send it here jonasvillamayor13@gmail.com</b>
-<br>
-<br>
-<br>
-<br>
 <input type="button" value="Back" class="back_btn">
 </div>
 </center>
