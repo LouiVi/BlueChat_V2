@@ -91,6 +91,8 @@ function send_msg() {
 						bt.Write(get_data() + "\n");
 						//app.TextToSpeech( msg )
 						document.getElementsByClassName("messages")[0].innerHTML += "<br><div class='mine'><sup>" + getdate() + "</sup><br><b>" + msg + "</b></div>";
+						var element = document.getElementsByClassName("messages")[0];
+element.scrollTop = element.scrollHeight;
 				} else {
 						if (add.indexOf(":") == 2) {
 								stuff.IsSending = true;
@@ -193,8 +195,11 @@ input[type="button"] {
 div.not_mine {
 		text-align: left;
 		border: 2px solid grey;
+		background-color: grey;
 		border-radius: 20px;
 		padding: 10px;
+		font-family: "Playfair Display", serif;
+		text-shadow: 0 0 1px #000000;
 }
 div.not_mine > sup,div.not_mine > b {
 		color: white;
@@ -204,6 +209,9 @@ div.mine {
 		border: 2px solid blue;
 		border-radius: 20px;
 		padding: 10px;
+		background-color: blue;
+		font-family: "Playfair Display", serif;
+		text-shadow: 0 0 1px #000000;
 }
 div.mine > sup {
 		color: white;
