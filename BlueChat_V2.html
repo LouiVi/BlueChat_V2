@@ -66,7 +66,7 @@ function received(data1) {
 		}
 		app.TextToSpeech( data.msg )
 		
-		document.getElementsByClassName("messages")[0].innerHTML += "<br><div class='not_mine'><sup>" + data.name + "|" + getdate() + "</sup><br><b>" + data.msg + "</b></div>";
+		document.getElementsByClassName("messages")[0].innerHTML += "<br><div class='bubble left'><sup>" + data.name + "<br />" + getdate() + "</sup><br><b>" + data.msg + "</b></div>";
 		var element = document.getElementsByClassName("messages")[0];
 
 // Scroll the element into view
@@ -90,9 +90,7 @@ function send_msg() {
 				if (bt.IsConnected(add)) {
 						bt.Write(get_data() + "\n");
 						//app.TextToSpeech( msg )
-						document.getElementsByClassName("messages")[0].innerHTML += "<br><div class='mine'><sup>" + getdate() + "</sup><br><b>" + msg + "</b></div>";
-						var element = document.getElementsByClassName("messages")[0];
-element.scrollTop = element.scrollHeight;
+						document.getElementsByClassName("messages")[0].innerHTML += "<br><div class='bubble right'><sup>" + getdate() + "</sup><br><b>" + msg + "</b></div>";
 				} else {
 						if (add.indexOf(":") == 2) {
 								stuff.IsSending = true;
@@ -191,15 +189,15 @@ input[type="button"] {
 		width: 90%;
 		height: 340px;
 		overflow-y: scroll;
+		display: flex;
+        flex-direction: column;
+        margin: 20px;
 }
 div.not_mine {
 		text-align: left;
 		border: 2px solid grey;
-		background-color: grey;
 		border-radius: 20px;
 		padding: 10px;
-		font-family: "Playfair Display", serif;
-		text-shadow: 0 0 1px #000000;
 }
 div.not_mine > sup,div.not_mine > b {
 		color: white;
@@ -209,9 +207,6 @@ div.mine {
 		border: 2px solid blue;
 		border-radius: 20px;
 		padding: 10px;
-		background-color: blue;
-		font-family: "Playfair Display", serif;
-		text-shadow: 0 0 1px #000000;
 }
 div.mine > sup {
 		color: white;
@@ -233,6 +228,46 @@ font-family: "Jaro", serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+}
+
+.bubble {
+    position: relative;
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin: 5px;
+    max-width: 60%;
+    color: white;
+    word-wrap: break-word; /* Ensures long words wrap correctly */
+}
+
+.left {
+    background-color: #4a90e2; /* Blue for the left bubble */
+    align-self: flex-start;
+}
+
+.right {
+    background-color: #50e3c2; /* Green for the right bubble */
+    align-self: flex-end;
+}
+
+.bubble:after {
+    content: '';
+    position: absolute;
+    bottom: 100%; /* Position above the bubble */
+    border-width: 10px;
+    border-style: solid;
+}
+
+.left:after {
+    border-color: transparent transparent #4a90e2 transparent; /* Triangle for left bubble */
+    left: 15px; /* Adjust position */
+}
+
+.right:after {
+    border-color: transparent transparent #50e3c2 transparent; /* Triangle for right bubble */
+    right: 15px; /* Adjust position */
+    transform: rotate(360deg); /* Flip the triangle for right bubble */
+    bottom: 100%; /* Position above the bubble */
 }
 </style>
 <body onLoad="app.Start()">
