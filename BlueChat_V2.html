@@ -1,7 +1,12 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width">
-<script type="text/javascript" src='file:///android_asset/app.js'></script>
+<script type="text/javascript" src='file:///android_asset/app.js'>
+app.LoadPlugin( "Utils" );
+utils = app.CreateUtils();
+utils.React();
+utils.Vue();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bokor&family=Figtree:ital,wght@0,300..900;1,300..900&family=Jaro:opsz@6..72&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Parkinsans:wght@300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
@@ -132,7 +137,7 @@ function add_events() {
 		document.getElementsByClassName("del_btn")[0].addEventListener("click",function() {
 				if (confirm("Delete all data?\nThis will delete all your messages\nThis cannot be undone")) {
 						app.DeleteFolder("/sdcard/.BlueChatV2");
-						app.Exit(true);
+						OnStart();
 				}
 		});
 }
@@ -157,11 +162,83 @@ function getdate() {
 		return time + "&nbsp;&nbsp;&nbsp;" + year + "-" + month + "-" + day;
 }
 
+//Create recognition object and set callbacks.
+	speech = app.CreateSpeechRec("NoBeep,Parxtial")
+	speech.SetOnResult( speech_OnResult )
+	speech.SetOnError( speech_OnError )
+	function speech_OnError( error )
+{
+    console.log( "Error" + error )
+    
+    //Restart recognition.
+    if( !speech.IsListening() ) speech.Recognize()
+}
+
+//Get the current time.
+function GetTime()
+{
+    var d = new Date()
+    return d.getHours() + " " + d.getMinutes()
+}
+
+//Get the current day.
+function GetDay()
+{
+    var d = new Date()
+    var weekday = new Array(7)
+    weekday[0]=  "Sunday";
+    weekday[1] = "Monday";
+    weekday[2] = "Tuesday";
+    weekday[3] = "Wednesday";
+    weekday[4] = "Thursday";
+    weekday[5] = "Friday";
+    weekday[6] = "Saturday";
+    return weekday[d.getDay()];
+}
+
+//Called with the recognition result(s).
+function speech_OnResult( results, partial )
+{
+    //Get result.
+    var cmd = results[0].toLowerCase()
+    
+    //Watch for key phrases.
+    if( cmd.indexOf("computer") > -1 )
+    {
+        //speech.Cancel()
+        app.TextToSpeech( "Yes Master?", 1,2, Listen )
+    }
+    else if( cmd.indexOf("what")>-1 && cmd.indexOf("time")>-1 )
+    {
+        //speech.Cancel()
+        app.TextToSpeech( GetTime(), 1,2, Listen  )
+    }
+    else if( cmd.indexOf("what")>-1 && cmd.indexOf("day")>-1 )
+    {
+       // speech.Cancel()
+        app.TextToSpeech( GetDay(), 1,2, Listen )
+    }
+    else if( cmd.indexOf("how")>-1 && cmd.indexOf("you")>-1 )
+    {
+        //speech.Cancel()
+        app.TextToSpeech( "I'm feeling good", 1,2, Listen )
+    }
+    else if( cmd.indexOf("exit")>-1 )
+    {
+       app.Exit()
+    }
+    
+    //Restart recognition.
+    else speech.Recognize()
+}
+
 </script>
 <style>
-body {
-		background: linear-gradient(to bottom,  rgba(121,249,174,1) 0%,rgba(14,210,92,1) 100%);
+body{
+		background: linear-gradient(to right,  rgba(149,149,149,1) 0%,rgba(13,13,13,1) 15%,rgba(1,1,1,1) 50%,rgba(10,10,10,1) 53%,rgba(56,56,56,1) 87%,rgba(27,27,27,1) 100%);
+background-image: url('./res/drawable/pattern_carbon');
 }
+
 .help,.settings {
 		display: none;
 }
@@ -174,6 +251,7 @@ body {
 input[type="text"] {
 background: linear-gradient(to bottom,  rgba(252,234,187,1) 0%,rgba(252,205,77,1) 50%,rgba(248,181,0,1) 51%,rgba(251,223,147,1) 100%);
 font-family: "Figtree", serif;
+width: 200px;
 }
 input[type="button"] {
 		border-radius: 10px;
@@ -238,6 +316,7 @@ font-family: "Jaro", serif;
     max-width: 60%;
     color: white;
     word-wrap: break-word; /* Ensures long words wrap correctly */
+    text-shadow: 0 0 3px #3B3B3B;
 }
 
 .left {
@@ -285,7 +364,7 @@ font-family: "Jaro", serif;
 <table>
 <tr>
 <td>
-<span><input type="text" placeholder="Type Something" class="msg"><input type="button" value="Send" class="send"></span>
+<span><input type="text" placeholder="Type Something" class="msg"><input type="button" value="Send" class="send"><input type="button" value="Speak" class="send" onClick="speech.Recognize();"></span>
 </td>
 </tr>
 <tr>
